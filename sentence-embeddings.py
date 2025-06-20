@@ -51,10 +51,12 @@ df['label'] = df['days_to_resolve'].apply(categorize_days)
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 X = model.encode(df['issue_description'].tolist())
+pca = PCA(n_components=2)
+X_reduced = pca.fit_transform(X)
 y = df['label']
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_reduced, y, stratify=y, random_state=42)
 
 clf = LogisticRegression(max_iter=1000)
 clf.fit(X_train, y_train)
